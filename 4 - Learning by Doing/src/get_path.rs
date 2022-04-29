@@ -9,5 +9,5 @@ die Referenzen benutzen von dem Objekt shrug
  */
 pub fn get_path() -> String {
     let path: Vec<String> = env::args().collect();
-    String::from(&path[0])
+    path[0].clone()
 }
