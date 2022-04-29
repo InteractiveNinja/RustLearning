@@ -3,10 +3,6 @@ mod get_path;
 
 fn main() {
     // structs::run();
-    let path = get_path::get_path();
-    let full_path = {
-        let path: Vec<&str> = path.split("/").collect();
-        path[0]
-    };
+    let full_path = get_path::get_path();
     println!("{}", full_path);
 }
