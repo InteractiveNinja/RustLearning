@@ -6,9 +6,11 @@
       <sourceFolder url="file://$MODULE_DIR$/2 - Hello Ferris/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3 - Filelist/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/4 - Learning by Doing/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/5 - File Folder Wrapper/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/2 - Hello Ferris/target" />
       <excludeFolder url="file://$MODULE_DIR$/3 - Filelist/target" />
       <excludeFolder url="file://$MODULE_DIR$/4 - Learning by Doing/target" />
+      <excludeFolder url="file://$MODULE_DIR$/5 - File Folder Wrapper/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
