@@ -10,6 +10,18 @@ fn main() {
     folders_to_create.iter().for_each(|name| {
         println!("{}", name);
     });
+
+    let answerer = input("Do you want do proceed (y/n)");
+    let answerer_str = answerer.as_str();
+
+    match answerer_str {
+        "y" => {
+            println!("Noice");
+        }
+        _ => {
+            println!("Dann halt nicht :/c")
+        }
+    }
 }
 
 
@@ -56,4 +68,11 @@ fn folders_to_create(folder: &String, files: &Vec<String>) -> Vec<String> {
         to_create.push(folder_name);
     }
     to_create
+}
+
+fn input(msg: &str) -> String {
+    println!("Input: {}", msg);
+    let mut buffer = String::new();
+    std::io::stdin().read_line(&mut buffer);
+    buffer.trim_end().to_owned()
 }
