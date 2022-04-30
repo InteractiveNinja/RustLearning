@@ -1,4 +1,5 @@
 use std::{env, fs};
+use std::path::Path;
 
 fn main() {
     let files = get_files().expect("Oh no keine Argumente");
@@ -16,7 +17,7 @@ fn main() {
 
     match answerer_str {
         "y" => {
-            println!("Noice");
+            let created_folders = create_folders(&folders_to_create);
         }
         _ => {
             println!("Dann halt nicht :/c")
@@ -24,7 +25,35 @@ fn main() {
     }
 }
 
+struct Folder {
+    name: String,
+    created: bool,
+}
 
+/// Create Folders from Vec Array
+fn create_folders(folders: &Vec<String>) -> Vec<Folder> {
+    let mut _folders: Vec<Folder> = Vec::new();
+
+    folders.iter().for_each(|folder_name| {
+        let mut folder = Folder { name: folder_name.clone(), created: true };
+
+        let created_folder = fs::create_dir(Path::new(folder_name));
+        match created_folder {
+            Ok(_) => {
+
+            }
+            Err(_) => {
+                folder.created = false;
+            }
+        }
+
+        _folders.push(folder);
+    });
+
+    _folders
+}
+
+/// Get Files from Arguments
 fn get_files() -> Result<Vec<String>, &'static str> {
     let args: Vec<String> = env::args().collect();
     if args.len() <= 1 {
@@ -45,20 +74,23 @@ fn get_files() -> Result<Vec<String>, &'static str> {
     Ok(Vec::from(files))
 }
 
+/// Get folder which user is in
 fn get_pwd() -> String {
     let path = env::current_dir().expect("Path couldnt be found");
     let path_str = path.as_os_str().to_str().expect("Could not create OS String");
     String::from(path_str)
 }
 
+/// Returns the filename from the currently running exe
 fn get_exe() -> String {
     let exe_path = env::current_exe().expect("Executable couldnt be found");
     let exe_path_str = exe_path.as_os_str().to_str().expect("Could not create OS String");
     let exe_arr: Vec<&str> = exe_path_str.split("/").collect();
-    let exe_str = exe_arr[exe_arr.len()-1];
+    let exe_str = exe_arr[exe_arr.len() - 1];
     String::from(exe_str)
 }
 
+/// Returns a list with folders paths that should be created
 fn folders_to_create(folder: &String, files: &Vec<String>) -> Vec<String> {
     let mut to_create = Vec::new();
 
@@ -70,6 +102,7 @@ fn folders_to_create(folder: &String, files: &Vec<String>) -> Vec<String> {
     to_create
 }
 
+/// User Input that takes a message, returns user input
 fn input(msg: &str) -> String {
     println!("Input: {}", msg);
     let mut buffer = String::new();
