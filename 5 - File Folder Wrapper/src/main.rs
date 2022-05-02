@@ -1,5 +1,19 @@
 use std::{env, fs};
+use std::collections::HashMap;
 use std::path::Path;
+
+struct WrappedFile {
+    folder_path: String,
+    file_path: String,
+    folder_created: bool,
+}
+
+#[derive(Debug)]
+enum Confirm {
+    OKAY,
+    NO,
+}
+
 
 fn main() {
     let files = get_files().expect("Oh no keine Argumente");
@@ -8,50 +22,29 @@ fn main() {
     let folders_to_create = folders_to_create(&folder, &files);
 
     println!("Folders that will be created:");
-    folders_to_create.iter().for_each(|name| {
-        println!("{}", name);
+    folders_to_create.iter().for_each(|WrappedFile { file_path, folder_path, .. }| {
+        println!("{} --> {}", file_path, folder_path);
     });
 
-    let answerer = input("Do you want do proceed (y/n)");
-    let answerer_str = answerer.as_str();
+    let return_value = confirm_input("Hey Test 123");
 
-    match answerer_str {
-        "y" => {
-            let created_folders = create_folders(&folders_to_create);
-        }
-        _ => {
-            println!("Dann halt nicht :/c")
-        }
-    }
-}
+    println!("{:?}", return_value);
 
-struct Folder {
-    name: String,
-    created: bool,
+    // let answerer = input("Do you want do proceed (y/n)");
+    // let answerer_str = answerer.as_str();
+    //
+    // match answerer_str {
+    //     "y" => {
+    //         let created_folders = create_folders(&folders_to_create);
+    //     }
+    //     _ => {
+    //         println!("Dann halt nicht :/c")
+    //     }
+    // }
 }
 
 /// Create Folders from Vec Array
-fn create_folders(folders: &Vec<String>) -> Vec<Folder> {
-    let mut _folders: Vec<Folder> = Vec::new();
-
-    folders.iter().for_each(|folder_name| {
-        let mut folder = Folder { name: folder_name.clone(), created: true };
-
-        let created_folder = fs::create_dir(Path::new(folder_name));
-        match created_folder {
-            Ok(_) => {
-
-            }
-            Err(_) => {
-                folder.created = false;
-            }
-        }
-
-        _folders.push(folder);
-    });
-
-    _folders
-}
+// fn wrap_files(folders_files: &HashMap<String, String>) -> Vec<Folder> {}
 
 /// Get Files from Arguments
 fn get_files() -> Result<Vec<String>, &'static str> {
@@ -91,21 +84,28 @@ fn get_exe() -> String {
 }
 
 /// Returns a list with folders paths that should be created
-fn folders_to_create(folder: &String, files: &Vec<String>) -> Vec<String> {
-    let mut to_create = Vec::new();
-
+fn folders_to_create(folder: &String, files: &Vec<String>) -> Vec<WrappedFile> {
+    let mut folder_map: Vec<WrappedFile> = Vec::new();
     for filename in files {
         let file: Vec<&str> = filename.split(".").collect();
         let folder_name = format!("{}/{}", folder, file[0]);
-        to_create.push(folder_name);
+        folder_map.push(WrappedFile { folder_path: folder_name, file_path: filename.clone(), folder_created: false });
     }
-    to_create
+    folder_map
 }
 
 /// User Input that takes a message, returns user input
-fn input(msg: &str) -> String {
-    println!("Input: {}", msg);
+fn confirm_input(msg: &str) -> Confirm {
+    println!("{}, (y/n)", msg);
     let mut buffer = String::new();
-    std::io::stdin().read_line(&mut buffer);
-    buffer.trim_end().to_owned()
+    match std::io::stdin().read_line(&mut buffer) {
+        Ok(_) => {
+            if !(buffer.contains("y") || buffer.contains("n")) {
+                println!("Please choose between (y/n)");
+                confirm_input(msg);
+            };
+        }
+        Err(_) => {}
+    };
+    Confirm::NO
 }
