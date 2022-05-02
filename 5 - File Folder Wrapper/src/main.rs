@@ -10,7 +10,7 @@ struct WrappedFile {
 
 #[derive(Debug)]
 enum Confirm {
-    OKAY,
+    YES,
     NO,
 }
 
@@ -26,9 +26,8 @@ fn main() {
         println!("{} --> {}", file_path, folder_path);
     });
 
-    let return_value = confirm_input("Hey Test 123");
+    let return_value = confirm_input("Do you want to proceed");
 
-    println!("{:?}", return_value);
 
     // let answerer = input("Do you want do proceed (y/n)");
     // let answerer_str = answerer.as_str();
@@ -102,10 +101,18 @@ fn confirm_input(msg: &str) -> Confirm {
         Ok(_) => {
             if !(buffer.contains("y") || buffer.contains("n")) {
                 println!("Please choose between (y/n)");
-                confirm_input(msg);
-            };
+                confirm_input(msg)
+            } else {
+                if buffer.contains("y") {
+                    Confirm::YES
+
+                } else {
+                    Confirm::NO
+                }
+            }
         }
-        Err(_) => {}
-    };
-    Confirm::NO
+        Err(_) => {
+            Confirm::NO
+        }
+    }
 }
